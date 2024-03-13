@@ -120,6 +120,9 @@ esPadre(Padre,hijo):-esDecendienteDirecto(hijo,Padre),esHombre(Padre).
 esHermano(Hermana,Persona):-esDecendienteDirecto(Hermano,Padre),eshombre(Hermano),esDecendienteDirecto(Hijo,Padre).
 esAbuelo(abuelo,Hijo)esDecendienteDirecto(Nieto),esDecendienteDirecto(Padre,abuelo),eshombre(abuelo).
 
+
+
+
 %reglaancestro
 esAncestro(Ancestro, Persona) :-esDecendienteDirecto(Persona,Ancestro),esHombre(ancestro);
 
