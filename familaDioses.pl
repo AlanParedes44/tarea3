@@ -121,7 +121,6 @@ esHermano(Hermana,Persona):-esDecendienteDirecto(Hermano,Padre),eshombre(Hermano
 esAbuelo(abuelo,Hijo)esDecendienteDirecto(Nieto),esDecendienteDirecto(Padre,abuelo),eshombre(abuelo).
 
 %reglaancestro
-esAncestro(Ancestro, Persona) :-(esPadre(Ancestro, Persona) ; esMadre(Ancestro, Persona)).
+esAncestro(Ancestro, Persona) :-esDecendienteDirecto(Persona,Ancestro),esHombre(ancestro);
 
-esAncestro(Ancestro, Persona) :-(esPadre(Padre, Persona), esAncestro(Ancestro, Padre)) ;
-    (esMadre(Madre, Persona), esAncestro(Ancestro, Madre)).
+esAncestro(Ancestro, Persona) :-esDecendienteDirecto(Persona,Padre),esAncestro(ancestro,Padre).
