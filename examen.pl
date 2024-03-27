@@ -1,65 +1,57 @@
-% Definición de productos
-producto('LG-510', electrodomestico, blanco, barato, bueno).
-producto('Samsung B125', electrodomestico, negro, caro, malo).
-producto('LG Batimix', electrodomestico, rojo, barato, malo).
-producto('Samsung L 200', electrodomestico, negro, caro, bueno).
-producto('Bose', entretenimiento, blanco, caro, bueno).  % Corregido el color
-producto('Parlantes LG', entretenimiento, rojo, barato, malo).
-producto('XBox 360', consola, verde, barato, malo).
-producto('XBox One', consola, verde, caro, bueno).
-producto('PS 2', computadora, negro, barato, bueno).
-producto('PS 3', computadora, negro, barato, bueno).
-producto('Omen 560', computadora, plateado, barato, malo).
-producto('Pavillon 15a', computadora, plateado, caro, bueno).
-producto('Destrunaitor 500', escritorio, plateado, barato, bueno).
+entretenimiento.
+electrodomestico.
+batidora.
+lavadora.
+parlantes.
 
-% Definición de clientes
-cliente(maria, [blanco, barato], [rojo, malo], [electrodomestico, entretenimiento], [caro]).
-cliente(juana, [negro, caro], [], [entretenimiento, computadora], [barato]).  % Corregida la categoría
-cliente(jeremias, [], [bueno, caro], [electrodomestico], [barato]).
+% categoria GLOBAL
+producto.
 
-% Reglas para identificar productos según características
-es_producto(Nombre) :- producto(Nombre, _, _, _, _).
-es_cliente(Nombre) :- cliente(Nombre, _, _, _, _).
-es_categoria(Categoria) :- producto(_, Categoria, _, _, _).
+esProducto("LG-510").
+esProducto("Samsung B125").
+esProducto("LG Batimix").
+esProducto("Samsung L-200").
+esProducto("Bose").
+esProducto("LG").
 
-% Reglas para identificar productos de un color específico
-productos_de_color_recursivo([], _, []).
-productos_de_color_recursivo([Producto|RestoProductos], Color, [Producto|ProductosDeColor]) :-
-    producto(Producto, _, Color, _, _),
-    productos_de_color_recursivo(RestoProductos, Color, ProductosDeColor).
-productos_de_color_recursivo([_|RestoProductos], Color, ProductosDeColor) :-
-    productos_de_color_recursivo(RestoProductos, Color, ProductosDeColor).
+esCategoria(entretenimiento).
+esCategoria(electrodomestico).
+esCategoria(batidora).
+esCategoria(lavadora).
+esCategoria(parlantes).
+esCategoria(producto).
 
-% Reglas para identificar productos de una calidad específica
-productos_de_calidad_recursivo([], _, []).
-productos_de_calidad_recursivo([Producto|RestoProductos], Calidad, [Producto|ProductosDeCalidad]) :-
-    producto(Producto, _, _, Calidad, _),
-    productos_de_calidad_recursivo(RestoProductos, Calidad, ProductosDeCalidad).
-productos_de_calidad_recursivo([_|RestoProductos], Calidad, ProductosDeCalidad) :-
-    productos_de_calidad_recursivo(RestoProductos, Calidad, ProductosDeCalidad).
+estaEnCategoria("LG-510", batidora).
+estaEnCategoria("Samsung B125", batidora).
+estaEnCategoria("LG Batimix", lavadora).
+estaEnCategoria("Samsung L-200", lavadora).
+estaEnCategoria("Bose", parlantes).
+estaEnCategoria("LG", parlantes).
 
-% Reglas para identificar productos de un precio específico
-productos_de_precio_recursivo([], _, []).
-productos_de_precio_recursivo([Producto|RestoProductos], Precio, [Producto|ProductosDePrecio]) :-
-    producto(Producto, _, _, _, Precio),
-    productos_de_precio_recursivo(RestoProductos, Precio, ProductosDePrecio).
-productos_de_precio_recursivo([_|RestoProductos], Precio, ProductosDePrecio) :-
-    productos_de_precio_recursivo(RestoProductos, Precio, ProductosDePrecio).
+% categoria dentro de categoria
+estaEnCategoria(batidora, electrodomestico).
+estaEnCategoria(lavadora, electrodomestico).
+estaEnCategoria(parlantes, entretenimiento).
 
-% Reglas para identificar productos según su categoría
-productos_de_categoria_recursivo([], _, []).
-productos_de_categoria_recursivo([Producto|RestoProductos], Categoria, [Producto|ProductosDeCategoria]) :-
-    producto(Producto, Categoria, _, _, _),
-    productos_de_categoria_recursivo(RestoProductos, Categoria, ProductosDeCategoria).
-productos_de_categoria_recursivo([_|RestoProductos], Categoria, ProductosDeCategoria) :-
-    productos_de_categoria_recursivo(RestoProductos, Categoria, ProductosDeCategoria).
+% categoria en categoria global
+estaEnCategoria(electrodomestico, producto).
+estaEnCategoria(lavadora, producto).
 
-% Reglas para recomendar productos a los clientes según sus gustos
-recomendar_a_cliente(Nombre, Producto) :-
-    es_cliente(Nombre),
-    cliente(Nombre, Colores, Calidades, Categorias, Precios),
-    productos_de_color_recursivo(Productos, Colores),
-    productos_de_calidad_recursivo(Productos, Calidades),
-    productos_de_categoria_recursivo(Productos, Categorias),
-    productos_de_precio_recursivo(Productos, Precios).
+esProductoDentrodeCategoria(Producto, Categoria):-esProducto(Producto),esCategoria(Categoria),estaEnCategoria(Producto, Categoria).
+esProductoDentrodeCategoria(Producto, Categoria):-estaEnCategoria(Categoria2, Categoria),esProductoDentrodeCategoria(Producto, Categoria2).
+
+% Preferencias de Maria
+tieneCaracteristicas("LG-510", blanco, barato, bueno).
+tieneCaracteristicas("Samsung B125", negro, caro, malo).
+tieneCaracteristicas("LG Batimix", rojo, barato, malo).
+tieneCaracteristicas("Samsung L-200", negro, caro, bueno).
+tieneCaracteristicas("Bose", blanco, caro, bueno ).
+tieneCaracteristicas("LG", rojo, barato, malo).
+
+recomendarAMaria1(Producto):-esProducto(Producto),tieneCaracteristicaS(Producto, verde, _ , _ ),esProductoDentroDeCategoria(Producto, producto).
+
+recomendarAMaria2(Producto):-esProducto(Producto),tieneCaracteristicaS(Producto, blanco, barato , _ ),esProductoDentroDeCategoria(Producto, entretenimiento).
+
+recomendarAMaria3(Producto):-esProducto(Producto),tieneCaracteristicaS(Producto, rojo, _ , malo ),esProductoDentroDeCategoria(Producto, electrodomestico).
+
+recomendarAMaria4(Producto):-esProducto(Producto),tieneCaracteristicaS(Producto, _ , _ , caro ),esProductoDentroDeCategoria(Producto, producto).
